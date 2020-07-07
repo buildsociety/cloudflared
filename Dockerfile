@@ -43,6 +43,7 @@ LABEL maintainer="buildsociety" \
 RUN apk --update --no-cache add \
     bind-tools \
     ca-certificates \
+    dumb-init \
     libressl \
     shadow \
     tzdata \
@@ -55,4 +56,5 @@ RUN cloudflared --version
 
 USER cloudflared
 
-ENTRYPOINT [ "/usr/local/bin/cloudflared", "--no-autoupdate" ]
+ENTRYPOINT [ "/usr/bin/dumb-init", "--" ]
+CMD [ "/usr/local/bin/cloudflared", "--no-autoupdate" ]
