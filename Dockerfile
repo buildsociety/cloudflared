@@ -55,4 +55,4 @@ RUN cloudflared --version
 
 USER cloudflared
 
-ENTRYPOINT [ "/usr/local/bin/cloudflared" ]
+ENTRYPOINT [ "/usr/local/bin/cloudflared", "--no-autoupdate" ]
