@@ -23,6 +23,7 @@ This image provides various versions that are available via tags. `latest` tag u
 | :----: | --- |
 | latest | Stable cloudflared Releases |
 | edge | Latest cloudflared Releases |
+| 2020.7.2 | cloudflared 2020.7.2 Release |
 | 2020.7.1 | cloudflared 2020.7.1 Release |
 | 2020.7.0 | cloudflared 2020.7.0 Release |
 
