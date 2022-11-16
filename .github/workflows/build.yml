@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  prep:
     runs-on: ubuntu-latest
     env:
       DOCKER_USERNAME: buildsocietybot
@@ -63,13 +63,31 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: buildsocietybot
+      DOCKER_IMAGE: buildsociety/cloudflared
+      DOCKER_PLATFORMS: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386,linux/ppc64le,linux/s390x
+    strategy:
+      fail-fast: false
+      matrix:
+        platforms:
+          - linux/amd64
+          - linux/arm/v6
+          - linux/arm/v7
+          - linux/arm64
+          - linux/386
+          - linux/ppc64le
+          - linux/s390x
+    steps:
       -
         name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           file: Dockerfile
-          platforms: ${{ env.DOCKER_PLATFORMS }}
+          platforms: ${{ matrix.platforms }}
           push: true
           tags: |
             buildsociety/cloudflared:latest
