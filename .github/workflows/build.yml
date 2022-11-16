@@ -22,13 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.prepare.outputs.version }}
+      build_date: ${{ steps.prepare.outputs.date }}
     steps:
       -
         name: Prepare
         id: prepare
         run: |
-          VERSION=$(git -c 'versionsort.suffix=-'     ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/cloudflare/cloudflared '*.*.*'     | tail --lines=1     | cut --delimiter='/' --fields=3)
-          echo version=${VERSION} >> $GITHUB_OUTPUT
+          echo version=$(git -c 'versionsort.suffix=-'     ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/cloudflare/cloudflared '*.*.*'     | tail --lines=1     | cut --delimiter='/' --fields=3) >> $GITHUB_OUTPUT
+          echo date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
   build:
     runs-on: ubuntu-latest
@@ -87,5 +88,5 @@ jobs:
             ghcr.io/buildsociety/cloudflared:${{ needs.prep.outputs.version }}
           build-args: |
             VERSION=${{ needs.prep.outputs.version }}
-            BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            BUILD_DATE=${{ needs.prep.outputs.build_date }}
             VCS_REF=${GITHUB_SHA::8}
