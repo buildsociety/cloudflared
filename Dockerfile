@@ -1,5 +1,5 @@
 FROM --platform=${BUILDPLATFORM:-linux/amd64} tonistiigi/xx:golang AS xgo
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.13-alpine as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.19-alpine as builder
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -10,7 +10,6 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 RUN printf "I am running on ${BUILDPLATFORM:-linux/amd64}, building for ${TARGETPLATFORM:-linux/amd64}\n$(uname -a)\n"
 
-ENV CLOUDFLARED_VERSION="2020.11.9"
 
 RUN apk --update --no-cache add \
     bash \
@@ -19,9 +18,10 @@ RUN apk --update --no-cache add \
     git \
   && rm -rf /tmp/* /var/cache/apk/*
 
-RUN git clone --branch ${CLOUDFLARED_VERSION} https://github.com/cloudflare/cloudflared /go/src/github.com/cloudflare/cloudflared
+#RUN git clone --branch ${VERSION} https://github.com/cloudflare/cloudflared /go/src/github.com/cloudflare/cloudflared
+COPY ./cloudflared /go/src/github.com/cloudflare/cloudflared
 WORKDIR /go/src/github.com/cloudflare/cloudflared
-RUN go build -v -mod vendor -ldflags "-w -s -X 'main.Version=${CLOUDFLARED_VERSION}' -X 'main.BuildTime=${BUILD_DATE}'" github.com/cloudflare/cloudflared/cmd/cloudflared
+RUN go build -v -mod vendor -ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=${BUILD_DATE}'" github.com/cloudflare/cloudflared/cmd/cloudflared
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:latest
 
