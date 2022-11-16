@@ -1,5 +1,5 @@
 FROM --platform=${BUILDPLATFORM:-linux/amd64} tonistiigi/xx:golang AS xgo
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.13-alpine as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.19-alpine as builder
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -10,7 +10,7 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 RUN printf "I am running on ${BUILDPLATFORM:-linux/amd64}, building for ${TARGETPLATFORM:-linux/amd64}\n$(uname -a)\n"
 
-ENV CLOUDFLARED_VERSION="2020.11.9"
+ARG CLOUDFLARED_VERSION
 
 RUN apk --update --no-cache add \
     bash \
