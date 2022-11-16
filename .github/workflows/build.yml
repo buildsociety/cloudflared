@@ -40,7 +40,7 @@ jobs:
       - name: Checkout Cloudflared
         uses: actions/checkout@v3
         with:
-          repository: 'https://github.com/cloudflare/cloudflared'
+          repository: 'cloudflare/cloudflared'
           path: 'cloudflared'
           ref: ${{ steps.prepare.outputs.version }}
 
