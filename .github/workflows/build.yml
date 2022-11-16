@@ -24,6 +24,8 @@ jobs:
       DOCKER_USERNAME: buildsocietybot
       DOCKER_IMAGE: buildsociety/cloudflared
       DOCKER_PLATFORMS: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386,linux/ppc64le,linux/s390x
+    outputs:
+      version: ${{ steps.prepare.outputs.version }}
     steps:
       -
         name: Prepare
@@ -65,6 +67,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
   build:
     runs-on: ubuntu-latest
+    needs: prep
     env:
       DOCKER_USERNAME: buildsocietybot
       DOCKER_IMAGE: buildsociety/cloudflared
@@ -91,11 +94,11 @@ jobs:
           push: true
           tags: |
             buildsociety/cloudflared:latest
-            buildsociety/cloudflared:${{ steps.prepare.outputs.version }}
+            buildsociety/cloudflared:${{ needs.prep.outputs.version }}
             ghcr.io/buildsociety/cloudflared:latest
-            ghcr.io/buildsociety/cloudflared:${{ steps.prepare.outputs.version }}
+            ghcr.io/buildsociety/cloudflared:${{ needs.prep.outputs.version }}
           build-args: |
-            VERSION=${{ steps.prepare.outputs.version }}
+            VERSION=${{ needs.prep.outputs.version }}
             BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
             VCS_REF=${GITHUB_SHA::8}
 
